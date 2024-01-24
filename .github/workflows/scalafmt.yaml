@@ -1,0 +1,15 @@
+# Write a github action to download the scalafmt and run it against the scala files in the repository
+name: scalafmt
+on:
+  push:
+    branches:
+      - master
+jobs:
+  scalafmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get Scalafmt
+        run: curl -s https://get-coursier.io/install.sh | sh && cs install scalafmt
+      - name: Run Scalafmt
+        run: cs launch scalafmt -- --diff --test
