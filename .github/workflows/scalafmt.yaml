@@ -1,9 +1,11 @@
 # Write a github action to download the scalafmt and run it against the scala files in the repository
+# how to run this workflow manually
 name: scalafmt
 on:
   push:
     branches:
       - master
+on: workflow_dispatch
 jobs:
   scalafmt:
     runs-on: ubuntu-latest
