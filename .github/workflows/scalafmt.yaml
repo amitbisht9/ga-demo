@@ -8,6 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Get Scalafmt
-        run: curl -s https://get-coursier.io/install.sh | sh && cs install scalafmt
+        run: curl -fL "https://github.com/coursier/launchers/raw/master/cs-x86_64-pc-linux.gz" | gzip -d > cs && chmod +x cs && ./cs install scalafmt
       - name: Run Scalafmt
-        run: cs launch scalafmt -- --diff --test
+        run: ./cs launch scalafmt -- --test
