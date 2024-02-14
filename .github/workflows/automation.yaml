@@ -49,8 +49,8 @@ jobs:
           robot --output results login.robot
         working-directory: ${{ github.workspace }}
 
-    - name: Archive test results
-      uses: actions/upload-artifact@v2
-      with:
-        name: Robot_Framework_Results
-        path: results/*.html
+      - name: Archive test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: Robot_Framework_Results
+          path: results/*.html
