@@ -26,13 +26,13 @@ jobs:
           pip install -r requirements.txt
       - name: Install Chrome browser and WebDriver
         run: |
-          apt-get update -y
-          apt-get install -y chromium-browser
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
           CHROME_VERSION=$(chromium-browser --version | grep -oP "(?<=Chromium )[^ ]+")
           CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
           wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
-          unzip /tmp/chromedriver.zip -d /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
+          sudo unzip /tmp/chromedriver.zip -d /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
       - name: Run automation
         run: |
           robot login.robot
