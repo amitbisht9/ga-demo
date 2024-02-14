@@ -37,9 +37,7 @@ jobs:
         run: |
           CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
           echo "################## CHROME VERSION: $CHROME_VERSION ##################"
-          CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
-          echo "################## CHROMEDRIVER VERSION: $CHROMEDRIVER_VERSION ##################"
-          wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
+          wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_114.0.5735/chromedriver_linux64.zip"
           sudo unzip /tmp/chromedriver.zip -d /usr/local/bin/
           chromedriver --version
           sudo chmod +x /usr/local/bin/chromedriver
