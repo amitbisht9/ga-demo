@@ -24,15 +24,22 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - name: Install Chrome browser and WebDriver
+
+      - name: Install Chrome browser
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          CHROME_VERSION=$(chromium-browser --version | grep -oP "(?<=Chromium )[^ ]+")
+          wget -q -O /tmp/chrome.deb "https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.90-1_amd64.deb"
+          sudo dpkg -i /tmp/chrome.deb
+          sudo apt-get install -f
+
+      - name: Install Chrome WebDriver
+        run: |
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
           CHROMEDRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
           wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip"
           sudo unzip /tmp/chromedriver.zip -d /usr/local/bin/
           sudo chmod +x /usr/local/bin/chromedriver
+          
       - name: Run automation
         run: |
           robot login.robot
