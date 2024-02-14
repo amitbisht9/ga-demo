@@ -46,7 +46,7 @@ jobs:
 
       - name: Run automation
         run: |
-          robot --output results login.robot
+          robot --outputdir results login.robot
         working-directory: ${{ github.workspace }}
 
       - name: Archive test results
