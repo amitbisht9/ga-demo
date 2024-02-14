@@ -32,9 +32,11 @@ jobs:
           sudo dpkg -i /tmp/chrome.deb
           sudo apt-get install -f
           google-chrome --version
+          whereis google-chrome
 
       - name: Install Chrome WebDriver
         run: |
+          ps -ef | grep --color=auto -i chrome
           CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
           echo "################## CHROME VERSION: $CHROME_VERSION ##################"
           wget -q -O /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip"
