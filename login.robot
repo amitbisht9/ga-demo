@@ -2,11 +2,13 @@
 Library     SeleniumLibrary
 
 *** Variables ***
-${CHROME_OPTIONS}    headless=True
+${URL}            https://www.example.com
+${BROWSER}        chrome
+${CHROME_OPTIONS}    headless=True disable-gpu=True window-size=1920,1080
 
 *** Test Cases ***
 Login
-    Open Browser                        https://www.saucedemo.com/          chrome     chrome_options=${CHROME_OPTIONS}
+    Open Browser    ${URL}    ${BROWSER}    chrome_options=${CHROME_OPTIONS}
     Maximize Browser Window
     Wait Until Element Is Visible       id:user-name
     Input Text                          id:user-name                        standard_user
