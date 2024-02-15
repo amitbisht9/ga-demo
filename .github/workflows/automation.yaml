@@ -64,6 +64,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Robot_Framework_Results
-          path: results
+          path: results/**
 
 
