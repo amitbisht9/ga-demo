@@ -47,10 +47,23 @@ jobs:
       - name: Run automation
         run: |
           robot --outputdir results login.robot
-        working-directory: ${{ github.workspace }}
+        env:
+          AZURE_ORGANIZATION: ${{ secrets.AZURE_ORGANIZATION }}
+          AZURE_PROJECT: ${{ secrets.AZURE_PROJECT }}
+          AZURE_PAT: ${{ secrets.AZURE_PAT }}
+          TEST_RUN_ID: 3
+
+      - name: Upload test results to Azure Test Plans
+        run: |
+          curl -X POST https://dev.azure.com/$AZURE_ORGANIZATION/$AZURE_PROJECT/_apis/test/runs/$TEST_RUN_ID/results?api-version=6.0 \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Basic $AZURE_PAT" \
+            -d @results/output.xml
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
         with:
           name: Robot_Framework_Results
           path: results/*.html
+
+
