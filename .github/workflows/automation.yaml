@@ -47,18 +47,6 @@ jobs:
       - name: Run automation
         run: |
           robot --outputdir results login.robot
-        env:
-          AZURE_ORGANIZATION: ${{ secrets.AZURE_ORGANIZATION }}
-          AZURE_PROJECT: ${{ secrets.AZURE_PROJECT }}
-          AZURE_PAT: ${{ secrets.AZURE_PAT }}
-          TEST_RUN_ID: 3
-
-      - name: Upload test results to Azure Test Plans
-        run: |
-          curl -X POST https://dev.azure.com/$AZURE_ORGANIZATION/$AZURE_PROJECT/_apis/test/runs/$TEST_RUN_ID/results?api-version=6.0 \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Basic $AZURE_PAT" \
-            -d @results/output.xml
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
@@ -66,4 +54,17 @@ jobs:
           name: Robot_Framework_Results
           path: results/**
 
-
+      - name: Upload test results to Azure Test Plans
+        run: |
+          # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
+          azdevops_organization="amitabisht"
+          azdevops_project="test"
+          azdevops_test_plan_id="3"
+          azdevops_pat="${{ secrets.AZURE_PAT }}"
+        
+          # Upload Robot Framework test results to Azure Test Plans using curl
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+            --data-binary "@results/output.xml" \
+            "https://dev.azure.com/${azdevops_organization}/${azdevops_project}/_apis/test/runs/${azdevops_test_plan_id}/results?api-version=6.0"
