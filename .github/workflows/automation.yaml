@@ -44,10 +44,6 @@ jobs:
           chromedriver --version
           sudo chmod +x /usr/local/bin/chromedriver
 
-  Automation:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
       - name: Run automation
         run: |
           robot --outputdir results  --xunit report.xml login.robot
