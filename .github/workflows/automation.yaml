@@ -50,7 +50,7 @@ jobs:
     steps:
       - name: Run automation
         run: |
-          robot --outputdir results login.robot
+          robot --outputdir results  --xunit report.xml login.robot
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
@@ -58,17 +58,17 @@ jobs:
           name: Robot_Framework_Results
           path: results/**
 
-      - name: Upload test results to Azure Test Plans
-        run: |
-          # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
-          azdevops_organization="amitabisht"
-          azdevops_project="test"
-          azdevops_test_plan_id="3"
-          azdevops_pat="${{ secrets.AZURE_PAT }}"
+      # - name: Upload test results to Azure Test Plans
+      #   run: |
+      #     # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
+      #     azdevops_organization="amitabisht"
+      #     azdevops_project="test"
+      #     azdevops_test_plan_id="3"
+      #     azdevops_pat="${{ secrets.AZURE_PAT }}"
         
-          # Upload Robot Framework test results to Azure Test Plans using curl
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-            --data-binary "@results/output.xml" \
-            "https://dev.azure.com/${azdevops_organization}/${azdevops_project}/_apis/test/runs/${azdevops_test_plan_id}/results?api-version=6.0"
+      #     # Upload Robot Framework test results to Azure Test Plans using curl
+      #     curl -X POST \
+      #       -H "Content-Type: application/json" \
+      #       -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+      #       --data-binary "@results/output.xml" \
+      #       "https://dev.azure.com/${azdevops_organization}/${azdevops_project}/_apis/test/runs/${azdevops_test_plan_id}/results?api-version=6.0"
