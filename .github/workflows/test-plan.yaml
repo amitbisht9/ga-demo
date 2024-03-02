@@ -35,4 +35,5 @@ jobs:
           echo "Test Point IDs are: $test_point_ids "
 
       - name: Print TestPointIds
-        run: echo "TestPointIds: ${{ steps.fetch-test-point-ids.outputs.test_point_ids }}"
+        run: |
+          echo "TestPointIds: ${{ steps.fetch-test-point-ids.outputs.test_point_ids }}"
