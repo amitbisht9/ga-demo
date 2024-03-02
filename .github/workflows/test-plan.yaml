@@ -38,7 +38,7 @@ jobs:
           ######Create Test Run######
           curl POST \
             -H "Content-Type: application/json" \
-            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64) \
+            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
             "https://dev.azure.com/amitabisht/test/_apis/test/runs?api-version=6.0" \
             -d '[
               {
