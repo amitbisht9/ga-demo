@@ -31,9 +31,8 @@ jobs:
           response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
            "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0")
           test_point_ids=$(echo $response | jq -r '.value[].id')
-          echo "::set-output name=test_point_ids::$test_point_ids"
           echo "Test Point IDs are: $test_point_ids "
-
-      - name: Print TestPointIds
-        run: |
-          echo "TestPointIds: ${{ steps.fetch-test-point-ids.outputs.test_point_ids }}"
+          for id in $test_point_ids; do
+            echo "------"
+            echo $id
+          done
