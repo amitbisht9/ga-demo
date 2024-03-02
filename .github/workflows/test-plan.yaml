@@ -1,0 +1,29 @@
+name: Publish Result
+
+on: workflow_dispatch
+# on:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
+
+jobs:
+  test-publish:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Upload test results to Azure Test Plans
+        run: |
+          # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
+          azdevops_organization="amitabisht"
+          azdevops_project="test"
+          azdevops_test_plan_id="2azure devops"
+          azdevops_pat="${{ secrets.AZURE_PAT }}"
+        
+          ######Get Test PointIDs######
+          curl GET \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+            "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0"
