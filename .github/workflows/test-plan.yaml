@@ -32,7 +32,18 @@ jobs:
            "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0")
           test_point_ids=$(echo $response | jq -r '.value[].id')
           echo "Test Point IDs are: $test_point_ids "
-          for id in $test_point_ids; do
-            echo "------"
-            echo $id
-          done
+
+          ######Create Test Run######
+          curl POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64) \
+            "https://dev.azure.com/amitabisht/test/_apis/test/runs?api-version=6.0" \
+            -d '[
+              {
+              "name": "AppAutomationTest",
+              "plan": {
+                "id": "15"
+              },
+              "pointIds": $test_point_ids
+            }
+          ]'
