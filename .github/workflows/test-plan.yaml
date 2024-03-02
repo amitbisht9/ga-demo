@@ -14,6 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Install jq
+        run: |
+          sudo apt-get update && sudo apt-get install jq -y
+
       - name: Upload test results to Azure Test Plans
         run: |
           # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
@@ -23,7 +27,7 @@ jobs:
           azdevops_pat="${{ secrets.AZURE_PAT }}"
         
           ######Get Test PointIDs######
-          curl GET \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-            "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0"
+          response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+           "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0")
+          test_point_ids=$(echo $response | jq -r '.value[].id')
+          echo "Test Point IDs are: $test_point_ids "
