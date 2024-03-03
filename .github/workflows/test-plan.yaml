@@ -31,10 +31,9 @@ jobs:
           response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
            "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0")
           test_point_ids=$(echo $response | jq -r '.value[].id')
-          echo "Test Point IDs are: $test_point_ids"
-          for id in $(echo $test_point_ids ); do
-            echo $id
-          done
+          echo "${test_point_ids[*]}"
+          echo "-----"
+          echo "${test_point_ids[@]}"
           # IFS=$'\n' read -d '' -ra testId_array <<< "$test_point_ids"
           # echo "test ID array: $testId_array"
 
