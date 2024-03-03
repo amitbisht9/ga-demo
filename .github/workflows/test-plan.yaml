@@ -60,9 +60,9 @@ jobs:
             -d '{
               "name": "AppAutomationTest",
               "plan": {
-                "id": '$azdevops_test_plan_id'
+                "id": "${{ azdevops_test_plan_id }}"
               },
-              "pointIds": '$test_point_ids'
+              "pointIds": [10,11,12,13]
             }'
             
           if [ $? -ne 0 ]; then
