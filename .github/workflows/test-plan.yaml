@@ -33,16 +33,11 @@ jobs:
           
           # Parse the response using jq to extract TestPointIds and format them as an array
           test_point_ids="["
-          first=true
-          for id in $(echo $response | jq -r '.value[].id'); do
-            if $first; then
-              test_point_ids+=" $id"
-              first=false
-            else
-              test_point_ids+=", $id"
-            fi
-          done
-          test_point_ids+=" ]"
+            for id in $(echo $response | jq -r '.value[].id'); do
+              test_point_ids+=" $id,"
+            done
+            # Remove the trailing comma and add closing bracket
+            test_point_ids="${test_point_ids%,}]"
 
           echo $test_point_ids
 
