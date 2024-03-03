@@ -52,6 +52,6 @@ jobs:
               "plan": {
                 "id": "15"
               },
-              "pointIds": $test_point_ids
+              "pointIds": [10, 11, 12, 13]
             }
           ]'
