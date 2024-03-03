@@ -30,7 +30,8 @@ jobs:
           ######Get Test PointIDs######
           response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
            "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0")
-          test_point_ids=$(echo $response | jq -r '.value[].id')
+          test_point_ids=$(echo $response | jq -c -r '.value[].id')
+          echo "test Id are: $test_point_ids"
           echo "${test_point_ids[*]}"
           echo "-----"
           echo "${test_point_ids[@]}"
