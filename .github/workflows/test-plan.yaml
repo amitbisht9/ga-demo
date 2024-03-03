@@ -53,7 +53,7 @@ jobs:
           echo $test_point_ids
 
           ######Create Test Run######
-          curl -s -v POST \
+          curl -s POST \
             -H "Content-Type: application/json" \
             -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
             "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs?api-version=${azdevops_api_version}" \
@@ -62,7 +62,7 @@ jobs:
               "plan": {
                 "id": "15"
               },
-              "pointIds": $test_point_ids
+              "pointIds": [10, 11, 12, 13]
             }'
             
           if [ $? -ne 0 ]; then
