@@ -22,14 +22,25 @@ jobs:
         id: fetch-test-point-ids
         run: |
           # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
-          azdevops_organization="amitabisht"
+          azdevops_org="amitabisht"
           azdevops_project="test"
-          azdevops_test_plan_id="2azure devops"
           azdevops_pat="${{ secrets.AZURE_PAT }}"
-        
-          ######Get Test PointIDs######
+          azdevops_test_plan_id=15
+          azdevops_test_suite_id=16
+          azdevops_api_version=6.0
+          # Function to display error message and exit
+          function display_error() {
+            echo "Error: $1"
+            exit 1
+          }
+
+          #Get Test PointIDs
           response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-           "https://dev.azure.com/amitabisht/test/_apis/test/Plans/15/suites/16/points?api-version=6.0")
+           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/Plans/${azdevops_test_plan_id}/suites/${azdevops_test_suite_id}/points?api-version=${azdevops_api_version}")
+
+           if [ $? -ne 0 ]; then
+            display_error "Curl command failed"
+          fi
           
           # Parse the response using jq to extract TestPointIds and format them as an array
           test_point_ids="["
@@ -45,13 +56,15 @@ jobs:
           curl -s -v POST \
             -H "Content-Type: application/json" \
             -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-            "https://dev.azure.com/amitabisht/test/_apis/test/runs?api-version=6.0" \
-            -d '[
-              {
+            "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs?api-version=${azdevops_api_version}" \
+            -d '{
               "name": "AppAutomationTest",
               "plan": {
                 "id": "15"
               },
-              "pointIds": [10, 11, 12, 13]
-            }
-          ]'
+              "pointIds": $test_point_ids
+            }'
+            
+          if [ $? -ne 0 ]; then
+            display_error "Curl command failed"
+          fi
