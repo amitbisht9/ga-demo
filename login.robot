@@ -14,7 +14,7 @@ Login
     Sleep                               5s
     Close Browser
 
-Login
+Cart Page
     [Tags]      18
     Open Browser                        https://www.saucedemo.com/         Headless Chrome      
     Maximize Browser Window
@@ -25,7 +25,7 @@ Login
     Sleep                               5s
     Close Browser
 
-Login
+Checkout Page
     [Tags]      19
     Open Browser                        https://www.saucedemo.com/         Headless Chrome      
     Maximize Browser Window
@@ -36,7 +36,7 @@ Login
     Sleep                               5s
     Close Browser
 
-Login
+Logout 
     [Tags]      20
     Open Browser                        https://www.saucedemo.com/         Headless Chrome      
     Maximize Browser Window

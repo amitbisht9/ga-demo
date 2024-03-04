@@ -1,7 +1,7 @@
 from xml.etree import ElementTree as ET
 
 # Parse the output.xml file
-tree = ET.parse('output.xml')
+tree = ET.parse('results/output.xml')
 root = tree.getroot()
 
 # Find all test case elements
