@@ -35,7 +35,7 @@ jobs:
           }
 
           #Get Test PointIDs
-          response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+          test_point_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
            "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/Plans/${azdevops_test_plan_id}/suites/${azdevops_test_suite_id}/points?api-version=${azdevops_api_version}")
 
            if [ $? -ne 0 ]; then
@@ -44,14 +44,14 @@ jobs:
           
           # Parse the response using jq to extract TestPointIds and format them as an array
           test_point_ids="["
-            for id in $(echo $response | jq -r '.value[].id'); do
-              test_point_ids+=" $id,"
+            for point in $(echo $test_point_response | jq -r '.value[].id'); do
+              test_point_ids+=" $point,"
             done
             # Remove the trailing comma and add closing bracket
             test_point_ids="${test_point_ids%,}]"
 
-          echo $test_point_ids
-          echo $azdevops_test_plan_id
+          echo "test point IDs: $test_point_ids"
+
           ######Create Test Run######
           test_run_response=$(curl -s POST \
             -H "Content-Type: application/json" \
@@ -72,6 +72,13 @@ jobs:
           fi
 
           ##### Get Test Run Results
-          curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}"
+          test_result_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}")
 
+          for result in $(echo $test_result_response | jq -r '.value[].id'); do
+              test_result_ids+=" $result,"
+            done
+            # Remove the trailing comma and add closing bracket
+            test_result_ids="${test_result_ids%,}]"
+
+          echo "test result IDs: $test_result_ids"
