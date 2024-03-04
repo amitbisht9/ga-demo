@@ -47,7 +47,7 @@ jobs:
       - name: Run automation
         run: |
           robot --outputdir results  --xunit report.xml login.robot
-          apt-get update && apt-get install xmlstarlet
+          sudo apt-get update && sudo apt-get install xmlstarlet
           # Load the XML file
           xml_content=$(<output.xml)
 
