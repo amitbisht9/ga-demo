@@ -81,11 +81,11 @@ jobs:
 
             ## Update Test Results          
             for result_id in $(echo $test_result_response | jq -r '.value[].id'); do
-                echo "Test Result ID: "
+                echo "Test Result ID: $result_id"
                 curl -s PATCH \
                     -H "Content-Type: application/json" \
                     -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-                    "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/results?api-version=${azdevops_api_version}" \
+                    "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}" \
                     -d "{
                         \"id\": $result_id,
                         \"state\": \"Completed\",
