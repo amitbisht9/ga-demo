@@ -47,7 +47,8 @@ jobs:
       - name: Run automation
         run: |
           robot --outputdir results  --xunit report.xml login.robot
-          python test-report-parser.py
+          test_output=$(python test-report-parser.py)
+          echo $test_output
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
