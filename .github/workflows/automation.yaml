@@ -107,8 +107,10 @@ jobs:
           if [ $? -ne 0 ]; then
             display_error "Curl command failed"
           fi
+          echo "test_result_response: $test_result_response"
           ################################
           test_result_ids=$(echo $test_result_response | jq -r '.value[].id')
+          echo "test result IDs: $test_result_ids"
           test_results=()
           i=0
           for result in $(echo $test_output); do
