@@ -62,7 +62,7 @@ jobs:
               \"plan\": {
                 \"id\": \"$azdevops_test_plan_id\"
               },
-              \"pointIds\": \"$test_point_ids\"
+              \"pointIds\": $test_point_ids
             }"
             
           if [ $? -ne 0 ]; then
