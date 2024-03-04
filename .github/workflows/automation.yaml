@@ -109,7 +109,13 @@ jobs:
           fi
           echo "test_result_response: $test_result_response"
           ################################
-          test_result_ids=$(echo $test_result_response | jq -r '.value[].id')
+          test_result_ids="["
+            for res in $(echo $test_point_response | jq -r '.value[].id'); do
+              test_result_ids+=" $res,"
+            done
+            # Remove the trailing comma and add closing bracket
+            test_result_ids="${test_result_ids%,}]"
+         # test_result_ids=$(echo $test_result_response | jq -r '.value[].id')
           echo "test result IDs: $test_result_ids"
           test_results=()
           i=0
