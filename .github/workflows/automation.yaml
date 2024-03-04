@@ -32,7 +32,6 @@ jobs:
           sudo dpkg -i /tmp/chrome.deb
           sudo apt-get install -f
           google-chrome --version
-          whereis google-chrome
 
       - name: Install Chrome WebDriver
         run: |
@@ -46,9 +45,106 @@ jobs:
 
       - name: Run automation
         run: |
-          robot --outputdir results  --xunit report.xml login.robot
+          robot --outputdir results login.robot
           test_output=$(python test-report-parser.py)
           echo $test_output
+          
+          # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
+          azdevops_org="amitabisht"
+          azdevops_project="test"
+          azdevops_pat="${{ secrets.AZURE_PAT }}"
+          azdevops_test_plan_id=15
+          azdevops_test_suite_id=16
+          azdevops_api_version=6.0
+          
+          # Function to display error message and exit
+          function display_error() {
+            echo "Error: $1"
+            exit 1
+          }
+
+          #Get Test PointIDs
+          test_point_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/Plans/${azdevops_test_plan_id}/suites/${azdevops_test_suite_id}/points?api-version=${azdevops_api_version}")
+
+          if [ $? -ne 0 ]; then
+            display_error "Curl command failed"
+          fi
+          
+          # Parse the response using jq to extract TestPointIds and format them as an array
+          test_point_ids="["
+            for point in $(echo $test_point_response | jq -r '.value[].id'); do
+              test_point_ids+=" $point,"
+            done
+            # Remove the trailing comma and add closing bracket
+            test_point_ids="${test_point_ids%,}]"
+
+          echo "test point IDs: $test_point_ids"
+
+          ######Create Test Run######
+          test_run_response=$(curl -s POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+            "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs?api-version=${azdevops_api_version}" \
+            -d "{
+              \"name\": \"AppAutomationTest\",
+              \"plan\": {
+                \"id\": \"$azdevops_test_plan_id\"
+              },
+              \"pointIds\": $test_point_ids
+            }")
+            test_run_id=$(echo $test_run_response | jq -r '.id' )
+            echo "test run ID: $test_run_id"
+            
+          if [ $? -ne 0 ]; then
+            display_error "Curl command failed"
+          fi
+
+          ##### Get Test Run Results
+          test_result_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}")
+
+          if [ $? -ne 0 ]; then
+            display_error "Curl command failed"
+          fi
+          ################################
+          test_result_ids=$(echo $test_result_response | jq -r '.value[].id')
+          test_results=()
+          i=0
+          for result in $(echo $test_output); do
+            test_id=$(echo $result | jq -r 'test_id')
+            test_name=$(echo $result | jq -r 'test_name')
+            test_duration=$(echo $result | jq -r 'test_duration')*1000
+            outcome=$(echo $result | jq -r 'test_status')
+            test_result_id=$(echo "${test_result_ids}" | jq -r '.[$i]')
+            i=$((i+1))
+            echo "***********************"
+            echo "test_id: $test_id"
+            echo "test_name: $test_name"
+            echo "test_duration: $test_duration"
+            echo "test_result: $outcome"
+            echo "test_result_id: $test_result_id"
+          done
+          ################################
+          # ## Update Test Results
+          # for result_id in $(echo $test_result_response | jq -r '.value[].id'); do
+          #     echo "Test Result ID: $result_id"
+          #     curl -s -X PATCH \
+          #         -H "Content-Type: application/json" \
+          #         -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+          #         "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}" \
+          #         -d "[{
+          #             \"id\": $result_id,
+          #             \"state\": \"Completed\",
+          #             \"outcome\": \"Passed\",
+          #             \"comment\": \"Execution Successful\"
+          #         }]"
+
+          #     if [ $? -ne 0 ]; then
+          #       display_error "Curl command failed"
+          #     fi
+          # done
+
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
