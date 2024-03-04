@@ -34,66 +34,79 @@ jobs:
             exit 1
           }
 
-          #Get Test PointIDs
-          test_point_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/Plans/${azdevops_test_plan_id}/suites/${azdevops_test_suite_id}/points?api-version=${azdevops_api_version}")
+          # #Get Test PointIDs
+          # test_point_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+          #  "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/Plans/${azdevops_test_plan_id}/suites/${azdevops_test_suite_id}/points?api-version=${azdevops_api_version}")
 
-           if [ $? -ne 0 ]; then
-            display_error "Curl command failed"
-          fi
+          #  if [ $? -ne 0 ]; then
+          #   display_error "Curl command failed"
+          # fi
           
-          # Parse the response using jq to extract TestPointIds and format them as an array
-          test_point_ids="["
-            for point in $(echo $test_point_response | jq -r '.value[].id'); do
-              test_point_ids+=" $point,"
-            done
-            # Remove the trailing comma and add closing bracket
-            test_point_ids="${test_point_ids%,}]"
+          # # Parse the response using jq to extract TestPointIds and format them as an array
+          # test_point_ids="["
+          #   for point in $(echo $test_point_response | jq -r '.value[].id'); do
+          #     test_point_ids+=" $point,"
+          #   done
+          #   # Remove the trailing comma and add closing bracket
+          #   test_point_ids="${test_point_ids%,}]"
 
-          echo "test point IDs: $test_point_ids"
+          # echo "test point IDs: $test_point_ids"
 
-          ######Create Test Run######
-          test_run_response=$(curl -s POST \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-            "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs?api-version=${azdevops_api_version}" \
-            -d "{
-              \"name\": \"AppAutomationTest\",
-              \"plan\": {
-                \"id\": \"$azdevops_test_plan_id\"
-              },
-              \"pointIds\": $test_point_ids
-            }")
-            test_run_id=$(echo $test_run_response | jq -r '.id' )
-            echo "test run ID: $test_run_id"
+          # ######Create Test Run######
+          # test_run_response=$(curl -s POST \
+          #   -H "Content-Type: application/json" \
+          #   -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+          #   "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs?api-version=${azdevops_api_version}" \
+          #   -d "{
+          #     \"name\": \"AppAutomationTest\",
+          #     \"plan\": {
+          #       \"id\": \"$azdevops_test_plan_id\"
+          #     },
+          #     \"pointIds\": $test_point_ids
+          #   }")
+          #   test_run_id=$(echo $test_run_response | jq -r '.id' )
+          #   echo "test run ID: $test_run_id"
             
-          if [ $? -ne 0 ]; then
-            display_error "Curl command failed"
-          fi
+          # if [ $? -ne 0 ]; then
+          #   display_error "Curl command failed"
+          # fi
 
-          ##### Get Test Run Results
-          test_result_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}")
+          # ##### Get Test Run Results
+          # test_result_response=$(curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+          #  "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}")
 
-          if [ $? -ne 0 ]; then
-            display_error "Curl command failed"
-          fi
+          # if [ $? -ne 0 ]; then
+          #   display_error "Curl command failed"
+          # fi
 
-            ## Update Test Results          
-            for result_id in $(echo $test_result_response | jq -r '.value[].id'); do
-                echo "Test Result ID: $result_id"
+          #   ## Update Test Results          
+          #   for result_id in $(echo $test_result_response | jq -r '.value[].id'); do
+          #       echo "Test Result ID: $result_id"
+          #       curl -s PATCH \
+          #           -H "Content-Type: application/json" \
+          #           -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+          #           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}" \
+          #           -d "[{
+          #               \"id\": $result_id,
+          #               \"state\": \"Completed\",
+          #               \"outcome\": \"Passed\",
+          #               \"comment\": \"Execution Successful\"
+          #           }]"
+
+          #       if [ $? -ne 0 ]; then
+          #         display_error "Curl command failed"
+          #       fi
+          #   done
+
                 curl -s PATCH \
                     -H "Content-Type: application/json" \
                     -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-                    "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}" \
-                    -d "[{
-                        \"id\": $result_id,
-                        \"state\": \"Completed\",
-                        \"outcome\": \"Passed\",
-                        \"comment\": \"Execution Successful\"
-                    }]"
-
-                if [ $? -ne 0 ]; then
-                  display_error "Curl command failed"
-                fi
-            done
+                    "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/27/results?api-version=${azdevops_api_version}" \
+                    -d '[
+                            {
+                            "id": 100000,
+                            "state": "Completed",
+                            "outcome": "Passed",
+                            "comment": "Execution Successful"
+                          }
+                        ]'
