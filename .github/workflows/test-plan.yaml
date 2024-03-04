@@ -64,10 +64,14 @@ jobs:
               },
               \"pointIds\": $test_point_ids
             }")
-            echo $test_run_response
             test_run_id=$(echo $test_run_response | jq -r '.id' )
             echo "test run ID: $test_run_id"
             
           if [ $? -ne 0 ]; then
             display_error "Curl command failed"
           fi
+
+          ##### Get Test Run Results
+          curl -H "Content-Type: application/json" -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
+           "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}"
+
