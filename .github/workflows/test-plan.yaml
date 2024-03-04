@@ -51,7 +51,7 @@ jobs:
             test_point_ids="${test_point_ids%,}]"
 
           echo $test_point_ids
-
+          echo $azdevops_test_plan_id
           ######Create Test Run######
           curl -s POST \
             -H "Content-Type: application/json" \
