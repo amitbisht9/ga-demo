@@ -64,7 +64,7 @@ jobs:
               },
               \"pointIds\": $test_point_ids
             }")
-
+            echo $test_run_response
             test_run_id=$(echo $test_run_response | jq -r '.value[].id' )
             echo "test run ID: $test_run_id"
             
