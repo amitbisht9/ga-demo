@@ -47,21 +47,7 @@ jobs:
       - name: Run automation
         run: |
           robot --outputdir results  --xunit report.xml login.robot
-          sudo apt-get update && sudo apt-get install xmlstarlet
-          # Load the XML file
-          xml_content=$(<./results/output.xml)
-
-          # Find all test case elements and iterate over them
-          while IFS= read -r test_case; do
-              # Extract test case ID, name, status, and duration
-              test_id=$(xmlstarlet sel -t -v "tag" <<< "$test_case")
-              test_name=$(xmlstarlet sel -t -v "@name" <<< "$test_case")
-              test_status=$(xmlstarlet sel -t -v "status/@status" <<< "$test_case")
-              test_duration=$(xmlstarlet sel -t -v "status/@elapsed" <<< "$test_case")
-              
-              # Print test case ID, name, status, and duration
-              echo "Test Case ID: $test_id, Test Case Name: $test_name, Test Status: $test_status, Test Duration: $test_duration"
-          done < <(xmlstarlet sel -t -c "//test" <<< "$xml_content")
+          python test-report-parser.py
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
