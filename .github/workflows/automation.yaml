@@ -115,7 +115,6 @@ jobs:
             done
             # Remove the trailing comma and add closing bracket
             test_result_ids="${test_result_ids%,}]"
-         # test_result_ids=$(echo $test_result_response | jq -r '.value[].id')
           echo "test result IDs: $test_result_ids"
           test_results=()
           i=0
