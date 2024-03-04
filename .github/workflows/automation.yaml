@@ -47,6 +47,21 @@ jobs:
       - name: Run automation
         run: |
           robot --outputdir results  --xunit report.xml login.robot
+          apt-get update && apt-get install xmlstarlet
+          # Load the XML file
+          xml_content=$(<output.xml)
+
+          # Find all test case elements and iterate over them
+          while IFS= read -r test_case; do
+              # Extract test case ID, name, status, and duration
+              test_id=$(xmlstarlet sel -t -v "tag" <<< "$test_case")
+              test_name=$(xmlstarlet sel -t -v "@name" <<< "$test_case")
+              test_status=$(xmlstarlet sel -t -v "status/@status" <<< "$test_case")
+              test_duration=$(xmlstarlet sel -t -v "status/@elapsed" <<< "$test_case")
+              
+              # Print test case ID, name, status, and duration
+              echo "Test Case ID: $test_id, Test Case Name: $test_name, Test Status: $test_status, Test Duration: $test_duration"
+          done < <(xmlstarlet sel -t -c "//test" <<< "$xml_content")
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
@@ -54,17 +69,3 @@ jobs:
           name: Robot_Framework_Results
           path: results/**
 
-      # - name: Upload test results to Azure Test Plans
-      #   run: |
-      #     # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
-      #     azdevops_organization="amitabisht"
-      #     azdevops_project="test"
-      #     azdevops_test_plan_id="3"
-      #     azdevops_pat="${{ secrets.AZURE_PAT }}"
-        
-      #     # Upload Robot Framework test results to Azure Test Plans using curl
-      #     curl -X POST \
-      #       -H "Content-Type: application/json" \
-      #       -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
-      #       --data-binary "@results/output.xml" \
-      #       "https://dev.azure.com/${azdevops_organization}/${azdevops_project}/_apis/test/runs/${azdevops_test_plan_id}/results?api-version=6.0"
