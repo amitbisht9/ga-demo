@@ -57,13 +57,13 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
             "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs?api-version=${azdevops_api_version}" \
-            -d '{
-              "name": "AppAutomationTest",
-              "plan": {
-                "id": "${{ azdevops_test_plan_id }}"
+            -d "{
+              \"name\": \"AppAutomationTest\",
+              \"plan\": {
+                \"id\": \"$azdevops_test_plan_id\"
               },
-              "pointIds": [10,11,12,13]
-            }'
+              \"pointIds\": [10,11,12,13]
+            }"
             
           if [ $? -ne 0 ]; then
             display_error "Curl command failed"
