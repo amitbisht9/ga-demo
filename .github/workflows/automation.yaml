@@ -49,7 +49,7 @@ jobs:
           robot --outputdir results  --xunit report.xml login.robot
           sudo apt-get update && sudo apt-get install xmlstarlet
           # Load the XML file
-          xml_content=$(<output.xml)
+          xml_content=$(<./results/output.xml)
 
           # Find all test case elements and iterate over them
           while IFS= read -r test_case; do
