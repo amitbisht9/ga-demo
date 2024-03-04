@@ -106,7 +106,10 @@ jobs:
                             {
                             "id": 100000,
                             "state": "Completed",
-                            "outcome": "Passed",
-                            "comment": "Execution Successful"
+                            "outcome": "Failed",
+                            "comment": "Execution Successful",
+                            "testCase": {
+                                            "name": "Website Login"
+                                        }
                           }
                         ]'
