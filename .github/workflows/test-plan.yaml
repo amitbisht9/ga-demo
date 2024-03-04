@@ -98,7 +98,7 @@ jobs:
           #       fi
           #   done
 
-                curl -s PATCH \
+                curl -s -X PATCH \
                     -H "Content-Type: application/json" \
                     -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
                     "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/27/results?api-version=${azdevops_api_version}" \
