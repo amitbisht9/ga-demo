@@ -124,7 +124,7 @@ jobs:
 
             test_id=$(echo $result | jq -r '.test_id')
             test_name=$(echo $result | jq -r '.test_name')
-            test_duration=$(echo $result | jq -r '.test_duration')*1000
+            test_duration=$(echo $result | jq -r '.test_duration * 1000')
             outcome=$(echo $result | jq -r '.test_status')
             test_result_id=$(echo "${test_result_ids}" | jq -r ".[$i]")
             test_results+=("{\"test_result_id\": \"$test_result_id\", \"id\": \"$test_id\", \"name\": \"$test_name\", \"duration\": \"$test_duration\", \"outcome\": \"$outcome\"}")
@@ -138,6 +138,7 @@ jobs:
             echo "test_result: $outcome"
             echo "test_result_id: $test_result_id"
           done
+          echo $test_results
           ################################
           # ## Update Test Results
           # for result_id in $(echo $test_result_response | jq -r '.value[].id'); do
