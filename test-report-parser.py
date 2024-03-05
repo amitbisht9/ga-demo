@@ -1,32 +1,31 @@
-from xml.etree import ElementTree as ET
+import xml.etree.ElementTree as ET
+import json
 
-# Parse the output.xml file
+# Parse the XML file
 tree = ET.parse('results/output.xml')
 root = tree.getroot()
 
-# Find all test case elements
-test_cases = root.findall('.//test')
+# Define a list to store test results
+test_results = []
 
-# Initialize a list to store test case details
-test_case_details = []
-
-# Iterate over test cases and extract details
-for test_case in test_cases:
-    test_id = test_case.find('tag').text
+# Iterate over test cases
+for test_case in root.findall('.//test'):
+    test_id = test_case.get('id')
     test_name = test_case.get('name')
-    test_duration = float(test_case.find('status').get('elapsed'))  # Convert duration to float
-    test_status = test_case.find('status').get('status')
-    
-    # Store test case details as a dictionary
-    test_case_info = {
+    test_duration = test_case.find('.//status').get('elapsed')
+    test_status = test_case.find('.//status').get('status')
+
+    # Create a dictionary for each test result and append it to the list
+    test_result = {
         "test_id": test_id,
         "test_name": test_name,
         "test_duration": test_duration,
         "test_status": test_status
     }
-    
-    # Append the dictionary to the list
-    test_case_details.append(test_case_info)
+    test_results.append(test_result)
 
-# Print the list of dictionaries
-print(test_case_details)
+# Convert the list of dictionaries to JSON format
+output_json = json.dumps(test_results)
+
+# Print the JSON output
+print(output_json)

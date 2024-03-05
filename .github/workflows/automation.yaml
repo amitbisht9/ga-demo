@@ -47,6 +47,7 @@ jobs:
         run: |
           robot --outputdir results login.robot
           test_output=$(python test-report-parser.py)
+          echo "output from Python Parser Script:"
           echo $test_output
           
           # Define Azure DevOps organization, project, test plan ID, and personal access token (PAT)
@@ -119,10 +120,10 @@ jobs:
           test_results=()
           i=0
           for result in $(echo $test_output); do
-            test_id=$(echo $result | jq -r '.test_id')
-            test_name=$(echo $result | jq -r '.test_name')
-            test_duration=$(echo $result | jq -r '.test_duration')*1000
-            outcome=$(echo $result | jq -r '.test_status')
+            test_id=$(echo $result | jq -r '.[] | .test_id')
+            test_name=$(echo $result | jq -r '.[] | .test_name')
+            test_duration=$(echo $result | jq -r '.[] | .test_duration')*1000
+            outcome=$(echo $result | jq -r '.[] | .test_status')
             test_result_id=$(echo "${test_result_ids}" | jq -r '.[$i]')
             i=$((i+1))
             echo "***********************"
