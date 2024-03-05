@@ -16,6 +16,15 @@ for test_case in root.findall('.//test'):
     test_duration = float(test_duration_str)
     test_status = test_case.find('.//status').get('status')
 
+    # Convert elapsed time to milliseconds without decimal points
+    test_duration = int(float(test_duration_str) * 1000)
+
+    # Set test_status to "Passed" if status is "PASS", otherwise set it to "Failed"
+    if test_status == "PASS":
+        test_status = "Passed"
+    else:
+        test_status = "Failed"
+
     # Create a dictionary for each test result and append it to the list
     test_result = {
         "test_id": test_id,
