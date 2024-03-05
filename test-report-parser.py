@@ -12,7 +12,8 @@ test_results = []
 for test_case in root.findall('.//test'):
     test_id = test_case.get('id')
     test_name = test_case.get('name')
-    test_duration = test_case.find('.//status').get('elapsed')
+    test_duration_str = test_case.find('.//status').get('elapsed')
+    test_duration = float(test_duration_str)
     test_status = test_case.find('.//status').get('status')
 
     # Create a dictionary for each test result and append it to the list
