@@ -3,7 +3,7 @@ Library     SeleniumLibrary
 Library     OperatingSystem
 
 *** Test Cases ***
-Login
+Website Login
     [Tags]      17
     Open Browser                        https://www.saucedemo.com/         Headless Chrome      
     Maximize Browser Window
@@ -14,7 +14,7 @@ Login
     Sleep                               5s
     Close Browser
 
-Cart Page
+Enter Username and Password
     [Tags]      18
     Open Browser                        https://www.saucedemo.com/         Headless Chrome      
     Maximize Browser Window
@@ -25,7 +25,7 @@ Cart Page
     Sleep                               5s
     Close Browser
 
-Checkout Page
+Home page is displayed
     [Tags]      19
     Open Browser                        https://www.saucedemo.com/         Headless Chrome      
     Maximize Browser Window
@@ -36,7 +36,7 @@ Checkout Page
     Sleep                               5s
     Close Browser
 
-Logout 
+Click on Logout button 
     [Tags]      20
     Open Browser                        https://www.saucedemo.com/         Headless Chrome      
     Maximize Browser Window
