@@ -157,8 +157,6 @@ jobs:
           if [ $? -ne 0 ]; then
             display_error "Curl command failed"
           fi
-      done
-
 
       - name: Archive test results
         uses: actions/upload-artifact@v2
