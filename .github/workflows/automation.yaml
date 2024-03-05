@@ -129,8 +129,7 @@ jobs:
               test_duration=$(echo $result | jq -r '.test_duration')
               outcome=$(echo $result | jq -r '.test_status')
               test_result_id=$(echo "${test_result_ids}" | jq -r ".[$i]")
-            ##  test_results+=$(echo "{\"test_result_id\": \"$test_result_id\", \"id\": \"$test_id\", \"name\": \"$test_name\", \"duration\": \"$test_duration\", \"outcome\": \"$outcome\"}")
-              test_results+=$(echo "{\"id\": \"$test_result_id\", \"durationInMs\": $test_duration, \"outcome\": \"$outcome\"}")
+              test_results+=$(echo "{\"id\": \"$test_result_id\", \"durationInMs\": $test_duration, \"outcome\": \"$outcome\", \"state\": \"Completed\"}")
 
               if [ $i -lt "$((total_results - 1))" ]; then
                 test_results+=","
