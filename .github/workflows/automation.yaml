@@ -44,9 +44,9 @@ jobs:
           sudo chmod +x /usr/local/bin/chromedriver
 
       - name: Run automation
-        continue-on-error: true
         run: |
-          robot --outputdir results login.robot
+          ## Run Functional Tests using Robot Scripts
+          robot --nostatusrc --outputdir results login.robot
           test_output=$(python test-report-parser.py)
           echo "output from Python Parser Script:"
           echo $test_output
