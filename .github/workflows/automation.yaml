@@ -129,7 +129,7 @@ jobs:
             test_duration=$(echo $result | jq -r '.test_duration * 1000')
             outcome=$(echo $result | jq -r '.test_status')
             test_result_id=$(echo "${test_result_ids}" | jq -r ".[$i]")
-            test_results=$test_results+("{\"test_result_id\": \"$test_result_id\", \"id\": \"$test_id\", \"name\": \"$test_name\", \"duration\": \"$test_duration\", \"outcome\": \"$outcome\"}")
+            test_results+=echo ("{\"test_result_id\": \"$test_result_id\", \"id\": \"$test_id\", \"name\": \"$test_name\", \"duration\": \"$test_duration\", \"outcome\": \"$outcome\"}")
             if [ $i -lt "$((total_results - 1))" ]; then
               test_results+=","
             fi
@@ -171,4 +171,3 @@ jobs:
         with:
           name: Robot_Framework_Results
           path: results/**
-
