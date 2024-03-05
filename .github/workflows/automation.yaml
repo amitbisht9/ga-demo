@@ -117,6 +117,8 @@ jobs:
             # Remove the trailing comma and add closing bracket
             test_result_ids="${test_result_ids%,}]"
           echo "test result IDs: $test_result_ids"
+          total_results=$(echo $test_output | jq length)
+          echo "Total Results: $total_results"
           test_results=()
           i=0
           IFS=$'\n'
@@ -128,6 +130,9 @@ jobs:
             outcome=$(echo $result | jq -r '.test_status')
             test_result_id=$(echo "${test_result_ids}" | jq -r ".[$i]")
             test_results+=("{\"test_result_id\": \"$test_result_id\", \"id\": \"$test_id\", \"name\": \"$test_name\", \"duration\": \"$test_duration\", \"outcome\": \"$outcome\"}")
+            if [ "$i" -lt "$((number_of_results - 1))" ]; then
+              test_results+=","
+            fi
             i=$((i+1))
 
             echo "***********************"
@@ -137,6 +142,7 @@ jobs:
             echo "test_duration: $test_duration"
             echo "test_result: $outcome"
             echo "test_result_id: $test_result_id"
+            echo "test_results: $test_results"
           done
           echo $test_results
           ################################
