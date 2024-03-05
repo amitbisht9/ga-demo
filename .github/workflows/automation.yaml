@@ -136,14 +136,6 @@ jobs:
                 test_results+=","
               fi
               i=$((i+1))
-
-              echo "***********************"
-              echo "json result: $result"
-              echo "test_id: $test_id"
-              echo "test_name: $test_name"
-              echo "test_duration: $test_duration"
-              echo "test_result: $outcome"
-              echo "test_result_id: $test_result_id"
           done
           echo $test_results
 
@@ -152,7 +144,7 @@ jobs:
               -H "Content-Type: application/json" \
               -H "Authorization: Basic $(echo -n :${azdevops_pat} | base64)" \
               "https://dev.azure.com/${azdevops_org}/${azdevops_project}/_apis/test/runs/${test_run_id}/results?api-version=${azdevops_api_version}" \
-              -d '[$test_results]'
+              -d "[$test_results]"
 
           if [ $? -ne 0 ]; then
             display_error "Curl command failed"
