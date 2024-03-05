@@ -22,8 +22,10 @@ for test_case in root.findall('.//test'):
     # Set test_status to "Passed" if status is "PASS", otherwise set it to "Failed"
     if test_status == "PASS":
         test_status = "Passed"
-    else:
+    elif test_status == "FAIL":
         test_status = "Failed"
+    else
+        test_status = "UnKnown"
 
     # Create a dictionary for each test result and append it to the list
     test_result = {
